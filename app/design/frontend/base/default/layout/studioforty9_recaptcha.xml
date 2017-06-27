@@ -56,7 +56,9 @@
 
     <sendfriend_product_send>
         <reference name="sendfriend.send">
-            <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.explicit" template="studioforty9/recaptcha/explicit.phtml"/>
+            <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.explicit" template="studioforty9/recaptcha/explicit.phtml">
+                <action method="setFormHandle"><value>productSendtofriendForm</value></action>
+            </block>
         </reference>
     </sendfriend_product_send>
 
