@@ -39,7 +39,7 @@ class Studioforty9_Recaptcha_Helper_Request extends Mage_Core_Helper_Abstract
     public function setHttpClient(Varien_Http_Client $client)
     {
         $this->_client = $client;
-        
+
         return $this;
     }
 
@@ -53,7 +53,7 @@ class Studioforty9_Recaptcha_Helper_Request extends Mage_Core_Helper_Abstract
         if (is_null($this->_client)) {
             $this->_client = new Zend_Http_Client();
         }
-        
+
         $this->_client->setUri(self::REQUEST_URL);
 
         return $this->_client;
@@ -71,7 +71,7 @@ class Studioforty9_Recaptcha_Helper_Request extends Mage_Core_Helper_Abstract
             'response' => $this->_getRequest()->getPost(self::REQUEST_RESPONSE),
             'remoteip' => $this->_getRequest()->getClientIp(true),
         );
-        
+
         $client = $this->getHttpClient();
         $client->setParameterPost($params);
         $errors = array();
@@ -82,7 +82,13 @@ class Studioforty9_Recaptcha_Helper_Request extends Mage_Core_Helper_Abstract
             $data = Mage::helper('core')->jsonDecode($body);
             if (array_key_exists('error-codes', $data)) {
                 $errors = $data['error-codes'];
-            }
+			}
+			if (array_key_exists('hostname', $data) && $data['hostname'] != gethostname())
+			{
+				throw new Exception(
+					"Recaptcha hostname mismatch", Mage_Api2_Model_Server::HTTP_BAD_REQUEST
+				);
+			}
         } catch (Exception $e) {
             Mage::logException($e);
             $data = array('success' => false);
